@@ -1,11 +1,13 @@
 package com.dagger2sample
 
 import android.content.Context
+import android.databinding.ObservableArrayList
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.Toast
-import com.example.android.mvpdagger.network.IApi
+import com.github.nitrico.lastadapter.LastAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,7 +15,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-data class Post(val userId: Int, val id: Int, val title: String, val body: String)
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,8 +24,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var retrofit: Retrofit
 
     @Inject
-    lateinit var mContext:Context
+    lateinit var mContext: Context
 
+
+    private var mPostList = ObservableArrayList<Data>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,19 +35,32 @@ class MainActivity : AppCompatActivity() {
 
         (application as MyApplication).getApiComponent().inject(this)
 
+        setupRecyclerView()
+
         callService()
     }
 
+    private fun setupRecyclerView() {
+        rvPosts.layoutManager = LinearLayoutManager(mContext)
+
+        LastAdapter(mPostList, BR.item)
+                .map<Data>(R.layout.item_rv)
+                .into(rvPosts)
+    }
+
     private fun callService() {
-        retrofit.create(IApi::class.java).getPosts().enqueue(object : Callback<List<Post>?> {
-            override fun onFailure(call: Call<List<Post>?>?, t: Throwable?) {
+        rvPosts.showShimmerAdapter()
+        retrofit.create(IApi::class.java).getPosts().enqueue(object : Callback<PostResp?> {
+            override fun onFailure(call: Call<PostResp?>?, t: Throwable?) {
                 Log.e(TAG, "onFailure: ", t)
 
             }
 
-            override fun onResponse(call: Call<List<Post>?>?, response: Response<List<Post>?>?) {
-                Toast.makeText(mContext, "Got The Response", Toast.LENGTH_SHORT).show()
-                tvResp.text = response?.body().toString()
+            override fun onResponse(call: Call<PostResp?>?, response: Response<PostResp?>?) {
+
+                mPostList.addAll(response?.body()?.data.orEmpty())
+
+                rvPosts.hideShimmerAdapter()
             }
         })
     }

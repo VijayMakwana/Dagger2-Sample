@@ -4,22 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".MainActivity">
 
-    <ScrollView
+    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+        android:id="@+id/rvPosts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tvResp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </ScrollView>
+        android:layout_height="match_parent"
+        app:shimmer_demo_angle="20"
+        app:shimmer_demo_reverse_animation="true"
+        app:shimmer_demo_duration="700"
+        app:shimmer_demo_shimmer_color="@android:color/background_dark"
+        app:shimmer_demo_child_count="10"
+        app:shimmer_demo_layout="@layout/layout_simmer_demo"
+        app:shimmer_demo_layout_manager_type="linear_vertical" />
 
 </android.support.constraint.ConstraintLayout>

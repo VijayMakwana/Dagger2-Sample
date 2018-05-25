@@ -1,6 +1,5 @@
-package com.example.android.mvpdagger.network
+package com.dagger2sample
 
-import com.dagger2sample.Post
 import retrofit2.Call
 import retrofit2.http.GET
 
@@ -9,6 +8,6 @@ import retrofit2.http.GET
  */
 interface IApi {
 
-    @GET("/posts")
-    fun getPosts(): Call<List<Post>>
+    @GET("5b07d757320000650070006f")
+    fun getPosts(): Call<PostResp>
 }
